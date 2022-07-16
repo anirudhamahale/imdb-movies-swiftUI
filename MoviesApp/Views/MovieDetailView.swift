@@ -26,7 +26,7 @@ struct MovieDetailView: View {
         ScrollView {
           VStack(alignment: .center, spacing: 16) {
             // ImageView
-            WebImage(url: URL(string: APPURL.imageRoute+movie.posterPath))
+            WebImage(url: URL(string: movie.posterPath))
               .resizable()
               .placeholder {
                 Rectangle().foregroundColor(.gray)

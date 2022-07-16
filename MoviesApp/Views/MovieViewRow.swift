@@ -15,7 +15,7 @@ struct MovieViewRow: View {
   var body: some View {
     HStack(alignment: .center, spacing: 16) {
       // ImageView
-      WebImage(url: URL(string: APPURL.imageRoute+movie.posterPath))
+      WebImage(url: URL(string: movie.posterPath))
         .resizable()
         .placeholder {
           Rectangle().foregroundColor(.gray)
@@ -27,8 +27,24 @@ struct MovieViewRow: View {
       // StackView containing the title and the release date
       VStack(alignment: .leading, spacing: 16) {
         Text(movie.originalTitle)
+          .font(.system(size: 16))
+          .foregroundColor(Color.black)
         Text(movie.releaseDate)
+          .font(.system(size: 12))
+          .foregroundColor(Color.black.opacity(0.7))
       }
     }
+  }
+}
+
+extension String {
+  func changeDate(from: String, to: String) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateStyle = DateFormatter.Style.long
+    dateFormatter.dateFormat = from
+    let convertedDate = dateFormatter.date(from: self)
+    dateFormatter.dateFormat = to
+    let date = dateFormatter.string(from: convertedDate!)
+    return date
   }
 }
