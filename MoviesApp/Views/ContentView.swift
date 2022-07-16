@@ -14,7 +14,7 @@ struct ContentView: View {
   
   var body: some View {
     TabView(selection: $selectedIndex) {
-      PopularMovies()
+      PopularMoviesView()
         .tabItem {
           VStack {
             Image(selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
@@ -22,7 +22,7 @@ struct ContentView: View {
               .foregroundColor(Color.black)
           }
         }.tag(0)
-      TopRatedMovies()
+      TopRatedMoviesView()
         .tabItem {
           VStack {
             Image(selectedIndex == 1 ? "ic_star_filled" : "ic_star")
