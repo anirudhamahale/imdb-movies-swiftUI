@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct PopularMoviesView: View {
+  
+  @ObservedObject var viewModel = MoviesViewModel()
+  
   var body: some View {
-    List {
-      MovieViewRow()
-      MovieViewRow()
-      MovieViewRow()
+    ZStack {
+      List {
+        ForEach(viewModel.movies) { movie in
+          MovieViewRow(movie: movie)
+        }
+      }
+    }.onAppear {
+      viewModel.fetchMovies()
     }
   }
 }
