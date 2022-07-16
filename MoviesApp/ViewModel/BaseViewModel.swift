@@ -9,4 +9,9 @@ import Combine
 
 class BaseViewModel: ObservableObject {
   var subscriptions = Set<AnyCancellable>()
+  
+  func invalidate() {
+    subscriptions.forEach { $0.cancel() }
+    subscriptions.removeAll()
+  }
 }

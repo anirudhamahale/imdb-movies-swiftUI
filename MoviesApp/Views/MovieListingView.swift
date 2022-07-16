@@ -18,16 +18,13 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
       ZStack {
         List {
           ForEach(viewModel.movies) { movie in
-            NavigationLink {
-              let detailViewModel = MovieDetailViewModel(id: movie.id)
-              MovieDetailView(viewModel: detailViewModel)
-            } label: {
+            NavigationLink(destination: MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id))) {
               MovieViewRow(movie: movie)
                 .onAppear {
                   if movie == viewModel.movies.last && !viewModel.isLoading {
                     viewModel.fetchMovies()
                   }
-              }
+                }
             }
             if movie == viewModel.movies.last {
               HStack {
@@ -41,12 +38,11 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
           viewModel.refreshMovies()
         }
       }
+      .navigationViewStyle(.stack)
       .navigationBarTitle("\(title)", displayMode: .inline)
       .alert(isPresented: $viewModel.reachedLastPage) {
         Alert(title: Text("You have reached to the end of the list."))
       }
-    }.onAppear {
-      viewModel.fetchMovies()
     }
   }
 }

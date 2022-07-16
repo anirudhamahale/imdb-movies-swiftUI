@@ -65,8 +65,6 @@ struct MovieDetailView: View {
           .padding()
         }
       }
-    }.onAppear {
-      viewModel.getDetails()
     }
   }
 }

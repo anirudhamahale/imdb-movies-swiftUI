@@ -31,6 +31,7 @@ class MovieNetworkManager: BaseNetworkManager {
   
   func getTopRatedMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
     let url = "\(APPURL.topRatedMovieList)?api_key=\(apiKey)&page=\(page)"
+    print(url)
     return get(url: URL(string: url)!)
       .map { $0.0 }
       .decode(type: ListResponse<MovieModel>.self, decoder: decoder)

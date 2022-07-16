@@ -9,6 +9,10 @@ import Foundation
 
 class MovieDetailViewModel: BaseViewModel {
   
+  deinit {
+    print("MovieDetailViewModel 🔥")
+  }
+  
   enum State {
     case details(MovieModelDetails)
     case loading
@@ -16,7 +20,10 @@ class MovieDetailViewModel: BaseViewModel {
   }
   
   init(id: Int) {
+    print("MovieDetailViewModel 🎬")
     self.id = id
+    super.init()
+    self.getDetails()
   }
   
   private let networkRepo = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
@@ -28,15 +35,15 @@ class MovieDetailViewModel: BaseViewModel {
     state = .loading
     networkRepo.getDetails(id: id)
       .receive(on: DispatchQueue.main)
-      .sink { error in
+      .sink { [weak self] error in
         switch error {
         case .failure(let error):
-          self.state = .failed(error)
+          self?.state = .failed(error)
         case .finished:
           print("Finished")
         }
-      } receiveValue: { [self] movie in
-        state = .details(movie)
+      } receiveValue: { [weak self] movie in
+        self?.state = .details(movie)
       }.store(in: &subscriptions)
   }
   
