@@ -38,11 +38,12 @@ class MovieNetworkManager: BaseNetworkManager {
       .eraseToAnyPublisher()
   }
   
-  func getDetails(id: Int) -> AnyPublisher<MovieModel, Error> {
-    let url = "\(APPURL.movieDetails)/\(id)"
+  func getDetails(id: Int) -> AnyPublisher<MovieModelDetails, Error> {
+    let url = "\(APPURL.movieDetails)/\(id)?api_key=\(apiKey)"
+    print(url)
     return get(url: URL(string: url)!)
       .map { $0.0 }
-      .decode(type: MovieModel.self, decoder: decoder)
+      .decode(type: MovieModelDetails.self, decoder: decoder)
       .eraseToAnyPublisher()
   }
   

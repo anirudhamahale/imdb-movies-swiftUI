@@ -25,7 +25,6 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
     networkManager.getPopularMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
       .sink { [weak self] error in
-        print(error)
         self?.isLoading = false
       } receiveValue: { [weak self] newMovies in
         if newMovies.count >= 20 {

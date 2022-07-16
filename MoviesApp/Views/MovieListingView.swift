@@ -18,12 +18,17 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
       ZStack {
         List {
           ForEach(viewModel.movies) { movie in
-            MovieViewRow(movie: movie)
-              .onAppear {
-                if movie == viewModel.movies.last && !viewModel.isLoading {
-                  viewModel.fetchMovies()
-                }
+            NavigationLink {
+              let detailViewModel = MovieDetailViewModel(id: movie.id)
+              MovieDetailView(viewModel: detailViewModel)
+            } label: {
+              MovieViewRow(movie: movie)
+                .onAppear {
+                  if movie == viewModel.movies.last && !viewModel.isLoading {
+                    viewModel.fetchMovies()
+                  }
               }
+            }
             if movie == viewModel.movies.last {
               HStack {
                 Spacer()

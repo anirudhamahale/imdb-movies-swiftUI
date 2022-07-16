@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		276EE13C28828F38004D816F /* MovieViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 276EE13B28828F38004D816F /* MovieViewRow.swift */; };
+		277E6F432882EA77003E6FFF /* MovieDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277E6F422882EA77003E6FFF /* MovieDetailView.swift */; };
+		277E6F452882ECCC003E6FFF /* MovieDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 277E6F442882ECCC003E6FFF /* MovieDetailViewModel.swift */; };
 		2788AF85288285D5009CA6A5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2788AF84288285D5009CA6A5 /* ContentView.swift */; };
 		2788AF87288285D7009CA6A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2788AF86288285D7009CA6A5 /* Assets.xcassets */; };
 		2788AF9228828611009CA6A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2788AF9128828611009CA6A5 /* AppDelegate.swift */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		099F1FD9DCDB27E70EC74429 /* Pods_MoviesApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MoviesApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		276EE13B28828F38004D816F /* MovieViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewRow.swift; sourceTree = "<group>"; };
+		277E6F422882EA77003E6FFF /* MovieDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailView.swift; sourceTree = "<group>"; };
+		277E6F442882ECCC003E6FFF /* MovieDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailViewModel.swift; sourceTree = "<group>"; };
 		2788AF7F288285D5009CA6A5 /* MoviesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoviesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2788AF84288285D5009CA6A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2788AF86288285D7009CA6A5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -114,6 +118,7 @@
 				2788AF9A2882894E009CA6A5 /* MovieListingView.swift */,
 				276EE13B28828F38004D816F /* MovieViewRow.swift */,
 				27D9CD492882C64A00EEAF86 /* ActivityIndicator.swift */,
+				277E6F422882EA77003E6FFF /* MovieDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -130,10 +135,11 @@
 		27D9CD2F2882919400EEAF86 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				27D9CD32288291DF00EEAF86 /* BaseViewModel.swift */,
 				27D9CD452882BA0800EEAF86 /* MoviesViewModelInterface.swift */,
 				27D9CD30288291AE00EEAF86 /* PopularMoviesViewModel.swift */,
 				27D9CD472882BC8E00EEAF86 /* TopRatedMoviesViewModel.swift */,
-				27D9CD32288291DF00EEAF86 /* BaseViewModel.swift */,
+				277E6F442882ECCC003E6FFF /* MovieDetailViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -313,12 +319,14 @@
 				27D9CD392882958600EEAF86 /* BaseNetworkManager.swift in Sources */,
 				27D9CD482882BC8E00EEAF86 /* TopRatedMoviesViewModel.swift in Sources */,
 				276EE13C28828F38004D816F /* MovieViewRow.swift in Sources */,
+				277E6F452882ECCC003E6FFF /* MovieDetailViewModel.swift in Sources */,
 				27D9CD462882BA0800EEAF86 /* MoviesViewModelInterface.swift in Sources */,
 				27D9CD41288298D800EEAF86 /* BaseResponses.swift in Sources */,
 				27D9CD31288291AE00EEAF86 /* PopularMoviesViewModel.swift in Sources */,
 				27D9CD33288291DF00EEAF86 /* BaseViewModel.swift in Sources */,
 				27D9CD4A2882C64A00EEAF86 /* ActivityIndicator.swift in Sources */,
 				27D9CD4428829AF400EEAF86 /* Constants.swift in Sources */,
+				277E6F432882EA77003E6FFF /* MovieDetailView.swift in Sources */,
 				2788AF85288285D5009CA6A5 /* ContentView.swift in Sources */,
 				2788AF9428828619009CA6A5 /* SceneDelegate.swift in Sources */,
 			);

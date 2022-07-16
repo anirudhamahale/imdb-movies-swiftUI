@@ -31,7 +31,7 @@ struct MovieModel: Codable, Identifiable, Equatable {
 
 struct MovieModelDetails: Codable, Identifiable, Equatable {
   let id: Int
-  let originalTitle, releaseDate: String
+  let originalTitle, releaseDate, description: String
   var posterPath: String
   
   enum CodingKeys: String, CodingKey {
@@ -39,6 +39,7 @@ struct MovieModelDetails: Codable, Identifiable, Equatable {
     case originalTitle = "original_title"
     case releaseDate = "release_date"
     case posterPath = "poster_path"
+    case description = "overview"
   }
   
   static func ==(lhs: MovieModelDetails, rhs: MovieModelDetails) -> Bool {
