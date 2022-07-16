@@ -19,7 +19,7 @@ struct MovieModel: Codable, Identifiable, Equatable {
   }
   
   static func ==(lhs: MovieModel, rhs: MovieModel) -> Bool {
-    return lhs.id > rhs.id
+    return lhs.id == rhs.id
   }
   
 }

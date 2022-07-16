@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftUIRefresh
 
 struct PopularMoviesView: View {
   
@@ -16,7 +17,14 @@ struct PopularMoviesView: View {
       List {
         ForEach(viewModel.movies) { movie in
           MovieViewRow(movie: movie)
+            .onAppear {
+              if movie == viewModel.movies.last {
+                viewModel.fetchMovies()
+              }
+            }
         }
+      }.pullToRefresh(isShowing: $viewModel.isRefreshing) {
+        viewModel.refreshMovies()
       }
     }.onAppear {
       viewModel.fetchMovies()

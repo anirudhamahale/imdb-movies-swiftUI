@@ -13,10 +13,12 @@ class MoviesViewModel: BaseViewModel {
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   
   @Published var movies: [MovieModel] = []
-  var page = 1
+  @Published var isRefreshing = false
+  
+  private var page = 1
   
   func fetchMovies() {
-    networkManager.getPopularMovies(1)
+    networkManager.getPopularMovies(page)
       .receive(on: DispatchQueue.main)
       .sink { error in
         
@@ -29,12 +31,16 @@ class MoviesViewModel: BaseViewModel {
   }
   
   func refreshMovies() {
-    networkManager.getPopularMovies(1)
+    page = 1
+    isRefreshing = true
+    networkManager.getPopularMovies(page)
       .receive(on: DispatchQueue.main)
-      .sink { error in
-        
-      } receiveValue: { newMovies in
-        self.movies = newMovies
+      .sink { [weak self] error in
+        self?.isRefreshing = false
+      } receiveValue: { [weak self] newMovies in
+        print(newMovies)
+        self?.isRefreshing = false
+        self?.movies = newMovies
       }.store(in: &subscriptions)
   }
   

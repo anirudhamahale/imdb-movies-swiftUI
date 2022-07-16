@@ -84,12 +84,12 @@
 			isa = PBXGroup;
 			children = (
 				2788AF9628828738009CA6A5 /* Info.plist */,
-				27D9CD4228829AEA00EEAF86 /* Utils */,
+				2788AF9028828605009CA6A5 /* App */,
 				27D9CD35288294F800EEAF86 /* Models */,
-				2788AF97288288EE009CA6A5 /* Assets */,
 				27D9CD2F2882919400EEAF86 /* ViewModel */,
 				2788AF9528828682009CA6A5 /* Views */,
-				2788AF9028828605009CA6A5 /* App */,
+				2788AF97288288EE009CA6A5 /* Assets */,
+				27D9CD4228829AEA00EEAF86 /* Utils */,
 			);
 			path = MoviesApp;
 			sourceTree = "<group>";

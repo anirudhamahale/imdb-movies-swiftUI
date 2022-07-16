@@ -17,6 +17,9 @@ struct MovieViewRow: View {
       // ImageView
       WebImage(url: URL(string: APPURL.imageRoute+movie.posterPath))
         .resizable()
+        .placeholder {
+          Rectangle().foregroundColor(.gray)
+        }
         .transition(.fade(duration: 0.5)) // Fade Transition with duration
         .scaledToFit()
         .frame(width: 80, height: 80, alignment: .center)
