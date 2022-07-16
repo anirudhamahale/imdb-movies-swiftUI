@@ -1,5 +1,5 @@
 //
-//  MoviesViewModel.swift
+//  TopRatedMoviesViewModel.swift
 //  MoviesApp
 //
 //  Created by Anirudha Mahale on 16/07/22.
@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-class MoviesViewModel: BaseViewModel {
+class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   
@@ -18,7 +18,7 @@ class MoviesViewModel: BaseViewModel {
   private var page = 1
   
   func fetchMovies() {
-    networkManager.getPopularMovies(page)
+    networkManager.getTopRatedMovies(page)
       .receive(on: DispatchQueue.main)
       .sink { error in
         
@@ -33,7 +33,7 @@ class MoviesViewModel: BaseViewModel {
   func refreshMovies() {
     page = 1
     isRefreshing = true
-    networkManager.getPopularMovies(page)
+    networkManager.getTopRatedMovies(page)
       .receive(on: DispatchQueue.main)
       .sink { [weak self] error in
         self?.isRefreshing = false
@@ -45,3 +45,4 @@ class MoviesViewModel: BaseViewModel {
   }
   
 }
+

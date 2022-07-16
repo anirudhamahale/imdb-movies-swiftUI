@@ -11,24 +11,18 @@ import Combine
 struct ContentView: View {
   
   @State var selectedIndex: Int = 0
+  private let popularMoviesViewModel = PopularMoviesViewModel()
+  private let topRatedViewModel = TopRatedMoviesViewModel()
   
   var body: some View {
     TabView(selection: $selectedIndex) {
-      PopularMoviesView()
+      MovieListingView(viewModel: popularMoviesViewModel, title: "Popular Movies")
         .tabItem {
-          VStack {
-            Image(selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
-            Text("Popular Movies")
-              .foregroundColor(Color.black)
-          }
+          Image(selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
         }.tag(0)
-      TopRatedMoviesView()
+      MovieListingView(viewModel: topRatedViewModel, title: "Top Rated Movies")
         .tabItem {
-          VStack {
-            Image(selectedIndex == 1 ? "ic_star_filled" : "ic_star")
-            Text("Popular Movies")
-              .foregroundColor(Color.black)
-          }
+          Image(selectedIndex == 1 ? "ic_star_filled" : "ic_star")
         }.tag(1)
     }
   }
