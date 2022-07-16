@@ -11,6 +11,7 @@ protocol MoviesViewModelInterface: ObservableObject {
   
   var movies: [MovieModel] { get set }
   var isRefreshing: Bool { get set }
+  var isLoading: Bool { get set }
   
   func fetchMovies()
   func refreshMovies()

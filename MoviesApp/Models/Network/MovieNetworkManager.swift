@@ -19,7 +19,7 @@ class MovieNetworkManager: BaseNetworkManager {
   /// A shared JSON decoder to use in calls.
   private let decoder = JSONDecoder()
   
-  func getPopularMovies(_ page: Int) -> AnyPublisher<[MovieModel], Error> {
+  func getPopularMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
     let url = "\(APPURL.popularMovieList)?api_key=\(apiKey)&page=\(page)"
     return get(url: URL(string: url)!)
       .map { $0.0 }
@@ -28,12 +28,20 @@ class MovieNetworkManager: BaseNetworkManager {
       .eraseToAnyPublisher()
   }
   
-  func getTopRatedMovies(_ page: Int) -> AnyPublisher<[MovieModel], Error> {
+  func getTopRatedMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
     let url = "\(APPURL.topRatedMovieList)?api_key=\(apiKey)&page=\(page)"
     return get(url: URL(string: url)!)
       .map { $0.0 }
       .decode(type: ListResponse<MovieModel>.self, decoder: decoder)
       .map { $0.data }
+      .eraseToAnyPublisher()
+  }
+  
+  func getDetails(id: Int) -> AnyPublisher<MovieModel, Error> {
+    let url = "\(APPURL.movieDetails)/\(id)"
+    return get(url: URL(string: url)!)
+      .map { $0.0 }
+      .decode(type: MovieModel.self, decoder: decoder)
       .eraseToAnyPublisher()
   }
   

@@ -20,10 +20,17 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
           ForEach(viewModel.movies) { movie in
             MovieViewRow(movie: movie)
               .onAppear {
-                if movie == viewModel.movies.last {
+                if movie == viewModel.movies.last && !viewModel.isLoading {
                   viewModel.fetchMovies()
                 }
               }
+            if movie == viewModel.movies.last {
+              HStack {
+                Spacer()
+                ActivityIndicator(isAnimating: $viewModel.isLoading)
+                Spacer()
+              }
+            }
           }
         }.pullToRefresh(isShowing: $viewModel.isRefreshing) {
           viewModel.refreshMovies()
