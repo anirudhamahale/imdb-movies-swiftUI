@@ -21,6 +21,7 @@ class MovieNetworkManager: BaseNetworkManager {
   
   func getPopularMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
     let url = "\(APPURL.popularMovieList)?api_key=\(apiKey)&page=\(page)"
+    print(url)
     return get(url: URL(string: url)!)
       .map { $0.0 }
       .decode(type: ListResponse<MovieModel>.self, decoder: decoder)

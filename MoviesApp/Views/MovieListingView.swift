@@ -37,6 +37,9 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
         }
       }
       .navigationBarTitle("\(title)", displayMode: .inline)
+      .alert(isPresented: $viewModel.reachedLastPage) {
+        Alert(title: Text("You have reached to the end of the list."))
+      }
     }.onAppear {
       viewModel.fetchMovies()
     }

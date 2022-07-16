@@ -15,18 +15,23 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   @Published var movies: [MovieModel] = []
   @Published var isRefreshing = false
   @Published var isLoading: Bool = false
+  @Published var reachedLastPage: Bool = false
   
-  private var page = 1
+  private var currentPage = 1
   
   func fetchMovies() {
+    guard !reachedLastPage else { return }
     isLoading = true
-    networkManager.getPopularMovies(page: page)
+    networkManager.getPopularMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
       .sink { [weak self] error in
+        print(error)
         self?.isLoading = false
       } receiveValue: { [weak self] newMovies in
-        if newMovies.count > 0 {
-          self?.page += 1
+        if newMovies.count >= 20 {
+          self?.currentPage += 1
+        } else {
+          self?.reachedLastPage = true
         }
         self?.movies.append(contentsOf: newMovies)
         self?.isLoading = false
@@ -34,9 +39,10 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   }
   
   func refreshMovies() {
-    page = 1
+    currentPage = 1
     isRefreshing = true
-    networkManager.getPopularMovies(page: page)
+    reachedLastPage = false
+    networkManager.getPopularMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
       .sink { [weak self] error in
         self?.isRefreshing = false
@@ -45,5 +51,4 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
         self?.movies = newMovies
       }.store(in: &subscriptions)
   }
-  
 }
