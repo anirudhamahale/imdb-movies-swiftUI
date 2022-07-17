@@ -13,7 +13,16 @@ protocol MoviesViewModelInterface: ObservableObject {
   var isRefreshing: Bool { get set }
   var isLoading: Bool { get set }
   var reachedLastPage: Bool { get set }
+  var state: ListState<MovieModel> { get set }
   
   func fetchMovies()
   func refreshMovies()
+  
+}
+
+enum ListState<T> {
+  case loading
+  case error(Error)
+  case noData
+  case data([T])
 }

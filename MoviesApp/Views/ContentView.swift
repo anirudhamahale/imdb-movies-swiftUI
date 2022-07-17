@@ -19,11 +19,11 @@ struct ContentView: View {
       MovieListingView(viewModel: popularMoviesViewModel, title: "Popular Movies")
         .tabItem {
           Image(selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
-        }
+        }.tag(0)
       MovieListingView(viewModel: topRatedViewModel, title: "Top Rated Movies")
         .tabItem {
           Image(selectedIndex == 1 ? "ic_star_filled" : "ic_star")
-        }
+        }.tag(1)
     }.onAppear {
       popularMoviesViewModel.fetchMovies()
       topRatedViewModel.fetchMovies()

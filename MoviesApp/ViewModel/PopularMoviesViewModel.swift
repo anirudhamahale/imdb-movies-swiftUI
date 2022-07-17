@@ -12,19 +12,27 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   
-  @Published var movies: [MovieModel] = []
+  var movies: [MovieModel] = [] {
+    didSet {
+      state = .data(movies)
+    }
+  }
   @Published var isRefreshing = false
   @Published var isLoading: Bool = false
   @Published var reachedLastPage: Bool = false
+  @Published var state: ListState<MovieModel> = .loading
   
   private var currentPage = 1
   
   func fetchMovies() {
     guard !reachedLastPage else { return }
     isLoading = true
+    if movies.count == 0 {
+      state = .loading
+    }
     networkManager.getPopularMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
-      .sink { [weak self] error in
+      .sink { [weak self] completion in
         self?.isLoading = false
       } receiveValue: { [weak self] newMovies in
         if newMovies.count >= 20 {
@@ -43,7 +51,7 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
     reachedLastPage = false
     networkManager.getPopularMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
-      .sink { [weak self] error in
+      .sink { [weak self] completion in
         self?.isRefreshing = false
       } receiveValue: { [weak self] newMovies in
         self?.isRefreshing = false

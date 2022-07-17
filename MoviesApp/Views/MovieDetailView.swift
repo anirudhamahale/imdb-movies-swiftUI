@@ -17,10 +17,12 @@ struct MovieDetailView: View {
     ZStack {
       switch viewModel.state {
       case .loading:
-        Text("Loading")
+        LoadingView(title: "Loading details...")
         
-      case .failed(let error):
-        Text(error.localizedDescription)
+      case .error(let error):
+        ErrorView(message: error.localizedDescription, buttonTitle: "Retry") {
+          viewModel.getDetails()
+        }
         
       case .details(let movie):
         ScrollView {

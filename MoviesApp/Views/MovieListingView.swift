@@ -16,26 +16,38 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
   var body: some View {
     NavigationView {
       ZStack {
-        List {
-          ForEach(viewModel.movies) { movie in
-            NavigationLink(destination: MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id))) {
-              MovieViewRow(movie: movie)
-                .onAppear {
-                  if movie == viewModel.movies.last && !viewModel.isLoading {
-                    viewModel.fetchMovies()
+        switch viewModel.state {
+        case .loading:
+          LoadingView(title: "Loading Movies...")
+        case .error(let error):
+          Text(error.localizedDescription)
+          ErrorView(message: error.localizedDescription, buttonTitle: "Retry") {
+            viewModel.fetchMovies()
+          }
+        case .noData:
+          Text("No data")
+        case .data(let movies):
+          List {
+            ForEach(movies) { movie in
+              NavigationLink(destination: MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id))) {
+                MovieViewRow(movie: movie)
+                  .onAppear {
+                    if movie == movies.last && !viewModel.isLoading {
+                      viewModel.fetchMovies()
+                    }
                   }
+              }
+              if movie == movies.last {
+                HStack {
+                  Spacer()
+                  ActivityIndicator(isAnimating: $viewModel.isLoading)
+                  Spacer()
                 }
-            }
-            if movie == viewModel.movies.last {
-              HStack {
-                Spacer()
-                ActivityIndicator(isAnimating: $viewModel.isLoading)
-                Spacer()
               }
             }
+          }.pullToRefresh(isShowing: $viewModel.isRefreshing) {
+            viewModel.refreshMovies()
           }
-        }.pullToRefresh(isShowing: $viewModel.isRefreshing) {
-          viewModel.refreshMovies()
         }
       }
       .navigationViewStyle(.stack)

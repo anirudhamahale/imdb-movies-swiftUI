@@ -8,19 +8,14 @@
 import Foundation
 
 class MovieDetailViewModel: BaseViewModel {
-  
-  deinit {
-    print("MovieDetailViewModel 🔥")
-  }
-  
+
   enum State {
     case details(MovieModelDetails)
     case loading
-    case failed(Error)
+    case error(Error)
   }
   
   init(id: Int) {
-    print("MovieDetailViewModel 🎬")
     self.id = id
     super.init()
     self.getDetails()
@@ -35,12 +30,11 @@ class MovieDetailViewModel: BaseViewModel {
     state = .loading
     networkRepo.getDetails(id: id)
       .receive(on: DispatchQueue.main)
-      .sink { [weak self] error in
-        switch error {
+      .sink { [weak self] completion in
+        switch completion {
         case .failure(let error):
-          self?.state = .failed(error)
-        case .finished:
-          break
+          self?.state = .error(error)
+        case .finished: break
         }
       } receiveValue: { [weak self] movie in
         self?.state = .details(movie)

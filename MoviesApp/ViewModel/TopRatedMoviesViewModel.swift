@@ -12,10 +12,15 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   
-  @Published var movies: [MovieModel] = []
+  var movies: [MovieModel] = [] {
+    didSet {
+      state = .data(movies)
+    }
+  }
   @Published var isRefreshing = false
   @Published var isLoading: Bool = false
   @Published var reachedLastPage: Bool = false
+  @Published var state: ListState<MovieModel> = .loading
   
   private var currentPage = 1
   
@@ -24,8 +29,9 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
     isLoading = true
     networkManager.getTopRatedMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
-      .sink { [weak self] error in
+      .sink { [weak self] completion in
         self?.isLoading = false
+        self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
         if newMovies.count > 0 {
           self?.currentPage += 1
@@ -40,12 +46,23 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
     isRefreshing = true
     networkManager.getTopRatedMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
-      .sink { [weak self] error in
+      .sink { [weak self] completion in
         self?.isRefreshing = false
+        self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
         self?.isRefreshing = false
         self?.movies = newMovies
       }.store(in: &subscriptions)
+  }
+  
+  private func processCompletion(_ completion: Subscribers.Completion<Error>) {
+    switch completion {
+    case .failure(let error):
+      if movies.count == 0 {
+        state = .error(error)
+      }
+    default: break
+    }
   }
 }
 

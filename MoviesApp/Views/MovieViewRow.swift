@@ -39,12 +39,13 @@ struct MovieViewRow: View {
 
 extension String {
   func changeDate(from: String, to: String) -> String {
+    print(self)
     let dateFormatter = DateFormatter()
     dateFormatter.dateStyle = DateFormatter.Style.long
     dateFormatter.dateFormat = from
-    let convertedDate = dateFormatter.date(from: self)
+    guard let convertedDate = dateFormatter.date(from: self) else { return "" }
     dateFormatter.dateFormat = to
-    let date = dateFormatter.string(from: convertedDate!)
+    let date = dateFormatter.string(from: convertedDate)
     return date
   }
 }
