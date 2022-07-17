@@ -65,6 +65,10 @@ struct MovieDetailView: View {
         }
         .navigationBarTitle("Movie Details", displayMode: .inline)
       }
+    }.onAppear {
+      if viewModel.movieDetail == nil {
+        viewModel.getDetails()
+      }
     }
   }
 }

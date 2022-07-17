@@ -30,7 +30,7 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
         case .data(let movies):
           List {
             ForEach(movies) { movie in
-              NavigationLink(destination: MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id))) {
+              NavigationLink(destination: LazyView(MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id)))) {
                 MovieViewRow(movie: movie)
                   .onAppear {
                     if movie == movies.last && !viewModel.isLoading {

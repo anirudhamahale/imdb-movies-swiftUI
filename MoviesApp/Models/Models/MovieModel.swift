@@ -73,10 +73,23 @@ struct MovieModelDetails: Codable, Identifiable, Equatable {
     posterPath = APPURL.imageRoute + postPathTemp
   }
   
+  init(id: Int, originalTitle: String, description: String, posterPath: String) {
+    self.id = id
+    self.originalTitle = originalTitle
+    self.description = description
+    self.posterPath = posterPath
+  }
+  
   static func ==(lhs: MovieModelDetails, rhs: MovieModelDetails) -> Bool {
     return lhs.id == rhs.id
   }
   
+  static func fromLocalDatabase(_ item: MovieCD) -> MovieModelDetails? {
+    return MovieModelDetails(id: Int(item.id!)!,
+                      originalTitle: item.title!,
+                      description: item.overview ?? "",
+                      posterPath: item.posterUrl ?? "")
+  }
 }
 
 struct VideoId: Codable {
