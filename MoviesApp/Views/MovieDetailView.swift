@@ -47,25 +47,23 @@ struct MovieDetailView: View {
               .font(.system(size: 14))
               .multilineTextAlignment(.center)
             
-            Button {
-              print("show trailer")
-            } label: {
-              Text("Watch Trailer")
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .font(.system(size: 20))
-                .padding()
-                .foregroundColor(.white)
-                .overlay(
-                  RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white, lineWidth: 2)
+            NavigationLink(destination: MovieTrailerView(viewModel: MovieTrailerViewModel(id: movie.id))) {
+              ZStack {
+                Color.red
+                Text("Watch Trailer")
+                  .font(.system(size: 20))
+                  .foregroundColor(Color.white)
+                  .padding()
+                  .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                      .stroke(Color.black, lineWidth: 0)
                 )
-            }.background(Color.red)
-              .cornerRadius(8)
-            
-            Spacer()
-          }
-          .padding()
+              }
+            }
+          }.padding()
+          Spacer()
         }
+        .navigationBarTitle("Movie Details", displayMode: .inline)
       }
     }
   }

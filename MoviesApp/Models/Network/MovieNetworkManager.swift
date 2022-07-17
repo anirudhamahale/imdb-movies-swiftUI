@@ -22,7 +22,6 @@ class MovieNetworkManager: BaseNetworkManager {
   func getPopularMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
     let url = "\(APPURL.popularMovieList)?api_key=\(apiKey)&page=\(page)"
     return get(url: URL(string: url)!)
-      .delay(for: 3, scheduler: RunLoop.main)
       .map { $0.0 }
       .decode(type: ListResponse<MovieModel>.self, decoder: decoder)
       .map { $0.data }
@@ -32,7 +31,6 @@ class MovieNetworkManager: BaseNetworkManager {
   func getTopRatedMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
     let url = "\(APPURL.topRatedMovieList)?api_key=\(apiKey)&page=\(page)"
     return get(url: URL(string: url)!)
-      .delay(for: 3, scheduler: RunLoop.main)
       .map { $0.0 }
       .decode(type: ListResponse<MovieModel>.self, decoder: decoder)
       .map { $0.data }
@@ -41,11 +39,29 @@ class MovieNetworkManager: BaseNetworkManager {
   
   func getDetails(id: Int) -> AnyPublisher<MovieModelDetails, Error> {
     let url = "\(APPURL.movieDetails)/\(id)?api_key=\(apiKey)"
+    print(url)
     return get(url: URL(string: url)!)
-      .delay(for: 3, scheduler: RunLoop.main)
       .map { $0.0 }
       .decode(type: MovieModelDetails.self, decoder: decoder)
       .eraseToAnyPublisher()
   }
   
+  func getTrailerKey(id: Int) -> AnyPublisher<String, Error> {
+    let url = "\(APPURL.movieTrailer.replacingOccurrences(of: "$movieId", with: "\(id)"))?api_key=\(apiKey)"
+    print(url)
+    return get(url: URL(string: url)!)
+      .map { $0.0 }
+      .decode(type: TrailerResponse<VideoId>.self, decoder: decoder)
+      .map { $0.data[0].key }
+      .eraseToAnyPublisher()
+  }
+  
+}
+
+struct TrailerResponse<T: Codable>: Codable {
+  let data: [T]
+  
+  enum CodingKeys: String, CodingKey {
+    case data = "results"
+  }
 }

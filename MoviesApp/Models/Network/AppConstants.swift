@@ -24,6 +24,7 @@ struct APPURL {
     static let popularMovieList = "/movie/popular"
     static let topRatedMovieList = "/movie/top_rated"
     static let movieDetails = "/movie"
+    static let movieTrailer = "/movie/$movieId/videos"
   }
   
   static var popularMovieList: String {
@@ -36,6 +37,10 @@ struct APPURL {
   
   static var movieDetails: String {
     return APICalls.baseURL + APICalls.movieDetails
+  }
+  
+  static var movieTrailer: String {
+    return APICalls.baseURL + APICalls.movieTrailer
   }
   
   static var imageRoute: String {

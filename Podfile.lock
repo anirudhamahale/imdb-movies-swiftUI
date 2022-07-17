@@ -7,10 +7,12 @@ PODS:
     - SDWebImage (~> 5.10)
   - SwiftUIRefresh (0.0.3):
     - Introspect (~> 0.1.0)
+  - youtube-ios-player-helper (1.0.4)
 
 DEPENDENCIES:
   - SDWebImageSwiftUI
   - SwiftUIRefresh
+  - youtube-ios-player-helper
 
 SPEC REPOS:
   trunk:
@@ -18,13 +20,15 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageSwiftUI
     - SwiftUIRefresh
+    - youtube-ios-player-helper
 
 SPEC CHECKSUMS:
   Introspect: b62c4dd2063072327c21d618ef2bedc3c87bc366
   SDWebImage: 53179a2dba77246efa8a9b85f5c5b21f8f43e38f
   SDWebImageSwiftUI: 8a3923c95108312b03a599ec1498754af55a6819
   SwiftUIRefresh: ca6ae2718d25aad5dd68bbf5d2ae36ef6ade98bf
+  youtube-ios-player-helper: e9b97535e816db3152179d84d999bc1807ecd689
 
-PODFILE CHECKSUM: 3385b6bd059cf91d7c111a87f63ad9831d7847a3
+PODFILE CHECKSUM: f0d8bbd353522fe832c0caaee8cfc29694d20e4a
 
 COCOAPODS: 1.11.2

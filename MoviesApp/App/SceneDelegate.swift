@@ -58,3 +58,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // to restore the scene back to its current state.
   }
 }
+
+extension UINavigationController {
+  // Remove back button text
+  open override func viewWillLayoutSubviews() {
+    navigationBar.topItem?.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+  }
+}

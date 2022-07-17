@@ -6,6 +6,7 @@ target 'MoviesApp' do
   use_frameworks!
   pod 'SDWebImageSwiftUI'
   pod "SwiftUIRefresh"
+  pod "youtube-ios-player-helper"
   # Pods for MoviesApp
 
 end

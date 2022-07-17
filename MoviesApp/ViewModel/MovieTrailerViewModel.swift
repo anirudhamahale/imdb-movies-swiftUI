@@ -1,16 +1,16 @@
 //
-//  MovieDetailViewModel.swift
+//  MovieTrailerViewModel.swift
 //  MoviesApp
 //
-//  Created by Anirudha Mahale on 16/07/22.
+//  Created by Anirudha Mahale on 17/07/22.
 //
 
 import Foundation
 
-class MovieDetailViewModel: BaseViewModel {
+class MovieTrailerViewModel: BaseViewModel {
 
   enum State {
-    case details(MovieModelDetails)
+    case details(String)
     case loading
     case error(Error)
   }
@@ -28,7 +28,7 @@ class MovieDetailViewModel: BaseViewModel {
   
   func getDetails() {
     state = .loading
-    networkRepo.getDetails(id: id)
+    networkRepo.getTrailerKey(id: id)
       .receive(on: DispatchQueue.main)
       .sink { [weak self] completion in
         switch completion {
@@ -36,8 +36,9 @@ class MovieDetailViewModel: BaseViewModel {
           self?.state = .error(error)
         case .finished: break
         }
-      } receiveValue: { [weak self] movie in
-        self?.state = .details(movie)
+      } receiveValue: { [weak self] key in
+        self?.state = .details(key)
       }.store(in: &subscriptions)
   }
 }
+
