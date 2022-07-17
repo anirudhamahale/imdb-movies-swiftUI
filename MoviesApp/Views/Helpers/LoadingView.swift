@@ -17,6 +17,7 @@ struct LoadingView: View {
     VStack(spacing: 16) {
       ActivityIndicator(isAnimating: $isLoading)
       Text(title)
+        .multilineTextAlignment(.center)
         .font(.system(size: 24))
     }
   }

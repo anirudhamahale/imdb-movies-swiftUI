@@ -17,11 +17,15 @@ struct ErrorView: View {
   var body: some View {
     VStack(spacing: 16) {
       Text(message)
+        .multilineTextAlignment(.center)
+        .font(.system(size: 20))
       if let buttonTitle = buttonTitle {
         Button {
           action()
         } label: {
           Text(buttonTitle)
+            .fontWeight(.bold)
+            .font(.system(size: 24))
         }
 
       }

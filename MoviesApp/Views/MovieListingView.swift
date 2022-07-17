@@ -20,7 +20,6 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
         case .loading:
           LoadingView(title: "Loading Movies...")
         case .error(let error):
-          Text(error.localizedDescription)
           ErrorView(message: error.localizedDescription, buttonTitle: "Retry") {
             viewModel.fetchMovies()
           }
