@@ -11,6 +11,7 @@ import Foundation
 class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
+  private let localDataManager = TopRatedMovieDataManager()
   
   var movies: [MovieModel] = [] {
     didSet {
@@ -33,11 +34,7 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
         self?.isLoading = false
         self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
-        if newMovies.count > 0 {
-          self?.currentPage += 1
-        }
-        self?.movies.append(contentsOf: newMovies)
-        self?.isLoading = false
+        self?.processReceivedValue(newMovies)
       }.store(in: &subscriptions)
   }
   
@@ -51,8 +48,23 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
         self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
         self?.isRefreshing = false
+        self?.processReceivedValue(newMovies)
         self?.movies = newMovies
       }.store(in: &subscriptions)
+  }
+  
+  private func processReceivedValue(_ newMovies: [MovieModel]) {
+    if newMovies.count > 0 && currentPage == 1 {
+      localDataManager.clearAll()
+    }
+    localDataManager.saveMovies(newMovies)
+    if newMovies.count >= 20 {
+      currentPage += 1
+    } else {
+      reachedLastPage = true
+    }
+    movies.append(contentsOf: newMovies)
+    isLoading = false
   }
   
   private func processCompletion(_ completion: Subscribers.Completion<Error>) {

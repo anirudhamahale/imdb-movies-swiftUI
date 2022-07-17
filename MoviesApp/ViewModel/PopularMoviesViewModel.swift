@@ -11,6 +11,7 @@ import Foundation
 class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
+  private let localDataManager = PopularMovieDataManager()
   
   var movies: [MovieModel] = [] {
     didSet {
@@ -34,14 +35,9 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
       .receive(on: DispatchQueue.main)
       .sink { [weak self] completion in
         self?.isLoading = false
+        self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
-        if newMovies.count >= 20 {
-          self?.currentPage += 1
-        } else {
-          self?.reachedLastPage = true
-        }
-        self?.movies.append(contentsOf: newMovies)
-        self?.isLoading = false
+        self?.processReceivedValue(newMovies)
       }.store(in: &subscriptions)
   }
   
@@ -53,9 +49,35 @@ class PopularMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
       .receive(on: DispatchQueue.main)
       .sink { [weak self] completion in
         self?.isRefreshing = false
+        self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
+        self?.movies = []
+        self?.processReceivedValue(newMovies)
         self?.isRefreshing = false
-        self?.movies = newMovies
       }.store(in: &subscriptions)
+  }
+  
+  private func processReceivedValue(_ newMovies: [MovieModel]) {
+    if newMovies.count > 0 && currentPage == 1 {
+      localDataManager.clearAll()
+    }
+    localDataManager.saveMovies(newMovies)
+    if newMovies.count >= 20 {
+      currentPage += 1
+    } else {
+      reachedLastPage = true
+    }
+    movies.append(contentsOf: newMovies)
+    isLoading = false
+  }
+  
+  private func processCompletion(_ completion: Subscribers.Completion<Error>) {
+    switch completion {
+    case .failure(let error):
+      if movies.count == 0 {
+        state = .error(error)
+      }
+    default: break
+    }
   }
 }
