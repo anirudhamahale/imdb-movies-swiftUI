@@ -49,7 +49,6 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
       } receiveValue: { [weak self] newMovies in
         self?.isRefreshing = false
         self?.processReceivedValue(newMovies)
-        self?.movies = newMovies
       }.store(in: &subscriptions)
   }
   
@@ -58,18 +57,25 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
       localDataManager.clearAll()
     }
     localDataManager.saveMovies(newMovies)
+    if currentPage == 1 {
+      movies = newMovies
+    } else {
+      movies.append(contentsOf: newMovies)
+    }
     if newMovies.count >= 20 {
       currentPage += 1
     } else {
       reachedLastPage = true
     }
-    movies.append(contentsOf: newMovies)
     isLoading = false
   }
   
   private func processCompletion(_ completion: Subscribers.Completion<Error>) {
     switch completion {
     case .failure(let error):
+      if error._code == NSURLErrorNotConnectedToInternet {
+        movies = localDataManager.getAllMovies()
+      }
       if movies.count == 0 {
         state = .error(error)
       }

@@ -18,10 +18,3 @@ public protocol DBHelperProtocol {
   func delete(_ object: ObjectType)
   func clearData(_ objectType: ObjectType.Type)
 }
-
-public extension DBHelperProtocol {
-  func fetch(_ objectType: ObjectType.Type, predicate: PredicateType? = nil, limit: Int? = nil) -> Result<[ObjectType], Error> {
-    return fetch(objectType, predicate: predicate, limit: limit)
-  }
-}
-
