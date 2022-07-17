@@ -40,7 +40,7 @@ class MovieDetailViewModel: BaseViewModel {
         case .failure(let error):
           self?.state = .failed(error)
         case .finished:
-          print("Finished")
+          break
         }
       } receiveValue: { [weak self] movie in
         self?.state = .details(movie)
