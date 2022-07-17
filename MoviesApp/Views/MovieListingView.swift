@@ -25,6 +25,8 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
           }
         case .noData:
           Text("No data")
+            .multilineTextAlignment(.center)
+            .font(.system(size: 20))
         case .data(let movies):
           List {
             ForEach(movies) { movie in
@@ -36,7 +38,7 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
                     }
                   }
               }
-              if movie == movies.last {
+              if movie == movies.last && viewModel.isLoading {
                 HStack {
                   Spacer()
                   ActivityIndicator(isAnimating: $viewModel.isLoading)

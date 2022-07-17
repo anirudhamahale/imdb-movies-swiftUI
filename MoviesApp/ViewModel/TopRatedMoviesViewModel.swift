@@ -67,17 +67,22 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
     } else {
       reachedLastPage = true
     }
+    if movies.count == 0 {
+      state = .noData
+    }
     isLoading = false
   }
   
   private func processCompletion(_ completion: Subscribers.Completion<Error>) {
     switch completion {
     case .failure(let error):
-      if error._code == NSURLErrorNotConnectedToInternet {
+      if error._code == NSURLErrorNotConnectedToInternet && movies.count == 0 {
         movies = localDataManager.getAllTopRatedMovies()
           .compactMap { MovieModel.fromLocalDatabase($0) }
-      }
-      if movies.count == 0 {
+        if movies.count == 0 {
+          state = .noData
+        }
+      } else if movies.count == 0 {
         state = .error(error)
       }
     default: break
