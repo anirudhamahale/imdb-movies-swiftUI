@@ -54,6 +54,10 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
       .alert(isPresented: $viewModel.reachedLastPage) {
         Alert(title: Text("You have reached to the end of the list."))
       }
+    }.onAppear {
+      if viewModel.currentPage == 1 && !viewModel.isLoading && !viewModel.isRefreshing {
+        viewModel.fetchMovies()
+      }
     }
   }
 }

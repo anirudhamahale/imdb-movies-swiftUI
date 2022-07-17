@@ -43,23 +43,12 @@ struct MovieModel: Codable, Identifiable, Equatable {
     return lhs.id == rhs.id
   }
   
-  static func fromLocalDatabase(_ item: NSManagedObject) -> MovieModel? {
-    switch item {
-    case let item as PopularMovieCD:
-      return MovieModel(id: Int(item.id!)!,
-                        originalTitle: item.title!,
-                        description: item.overview ?? "",
-                        posterPath: item.posterUrl ?? "",
-                        releaseDate: item.releaseDate ?? "")
-    case let item as TopRatedMovieCD:
-      return MovieModel(id: Int(item.id!)!,
-                        originalTitle: item.title!,
-                        description: item.overview ?? "",
-                        posterPath: item.posterUrl ?? "",
-                        releaseDate: item.releaseDate ?? "")
-    default:
-      return nil
-    }
+  static func fromLocalDatabase(_ item: MovieCD) -> MovieModel? {
+    return MovieModel(id: Int(item.id!)!,
+                      originalTitle: item.title!,
+                      description: item.overview ?? "",
+                      posterPath: item.posterUrl ?? "",
+                      releaseDate: item.releaseDate ?? "")
   }
 }
 

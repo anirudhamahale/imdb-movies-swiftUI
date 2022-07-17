@@ -16,5 +16,5 @@ public protocol DBHelperProtocol {
   func fetch(_ objectType: ObjectType.Type, predicate: PredicateType?, limit: Int?) -> Result<[ObjectType], Error>
   func update(_ object: ObjectType)
   func delete(_ object: ObjectType)
-  func clearData(_ objectType: ObjectType.Type)
+  func clearData(_ objectType: ObjectType.Type, predicate: NSPredicate?)
 }

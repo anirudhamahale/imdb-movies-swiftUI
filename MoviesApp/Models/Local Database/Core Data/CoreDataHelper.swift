@@ -75,8 +75,9 @@ class CoreDataHelper: DBHelperProtocol {
     context.delete(object)
   }
   
-  func clearData<T: NSManagedObject>(_ objectType: T.Type) {
+  func clearData<T: NSManagedObject>(_ objectType: T.Type, predicate: NSPredicate?) {
     let request = objectType.fetchRequest()
+    request.predicate = predicate
     let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
     
     do {

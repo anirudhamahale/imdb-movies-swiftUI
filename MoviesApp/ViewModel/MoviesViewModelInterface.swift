@@ -14,6 +14,7 @@ protocol MoviesViewModelInterface: ObservableObject {
   var isLoading: Bool { get set }
   var reachedLastPage: Bool { get set }
   var state: ListState<MovieModel> { get set }
+  var currentPage: Int { get set }
   
   func fetchMovies()
   func refreshMovies()

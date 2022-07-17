@@ -11,7 +11,7 @@ import Foundation
 class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
-  private let localDataManager = TopRatedMovieDataManager()
+  private let localDataManager = MovieDataManager()
   
   var movies: [MovieModel] = [] {
     didSet {
@@ -23,7 +23,7 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   @Published var reachedLastPage: Bool = false
   @Published var state: ListState<MovieModel> = .loading
   
-  private var currentPage = 1
+  var currentPage = 1
   
   func fetchMovies() {
     guard !reachedLastPage else { return }
@@ -54,9 +54,9 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private func processReceivedValue(_ newMovies: [MovieModel]) {
     if newMovies.count > 0 && currentPage == 1 {
-      localDataManager.clearAll()
+      localDataManager.clearTopRated()
     }
-    localDataManager.saveMovies(newMovies)
+    localDataManager.saveTopRatedMovies(newMovies)
     if currentPage == 1 {
       movies = newMovies
     } else {
@@ -74,7 +74,8 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
     switch completion {
     case .failure(let error):
       if error._code == NSURLErrorNotConnectedToInternet {
-        movies = localDataManager.getAllMovies()
+        movies = localDataManager.getAllTopRatedMovies()
+          .compactMap { MovieModel.fromLocalDatabase($0) }
       }
       if movies.count == 0 {
         state = .error(error)
