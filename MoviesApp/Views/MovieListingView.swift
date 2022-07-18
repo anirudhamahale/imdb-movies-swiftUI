@@ -25,10 +25,12 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
           }
         case .noData:
           Text("No data")
+            .multilineTextAlignment(.center)
+            .font(.system(size: 20))
         case .data(let movies):
           List {
             ForEach(movies) { movie in
-              NavigationLink(destination: MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id))) {
+              NavigationLink(destination: LazyView(MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id)))) {
                 MovieViewRow(movie: movie)
                   .onAppear {
                     if movie == movies.last && !viewModel.isLoading {
@@ -36,7 +38,7 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
                     }
                   }
               }
-              if movie == movies.last {
+              if movie == movies.last && viewModel.isLoading {
                 HStack {
                   Spacer()
                   ActivityIndicator(isAnimating: $viewModel.isLoading)
@@ -53,6 +55,10 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
       .navigationBarTitle("\(title)", displayMode: .inline)
       .alert(isPresented: $viewModel.reachedLastPage) {
         Alert(title: Text("You have reached to the end of the list."))
+      }
+    }.onAppear {
+      if viewModel.currentPage == 1 && !viewModel.isLoading && !viewModel.isRefreshing {
+        viewModel.fetchMovies()
       }
     }
   }

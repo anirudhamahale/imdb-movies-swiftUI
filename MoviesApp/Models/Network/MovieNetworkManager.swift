@@ -39,7 +39,6 @@ class MovieNetworkManager: BaseNetworkManager {
   
   func getDetails(id: Int) -> AnyPublisher<MovieModelDetails, Error> {
     let url = "\(APPURL.movieDetails)/\(id)?api_key=\(apiKey)"
-    print(url)
     return get(url: URL(string: url)!)
       .map { $0.0 }
       .decode(type: MovieModelDetails.self, decoder: decoder)
@@ -48,7 +47,6 @@ class MovieNetworkManager: BaseNetworkManager {
   
   func getTrailerKey(id: Int) -> AnyPublisher<String, Error> {
     let url = "\(APPURL.movieTrailer.replacingOccurrences(of: "$movieId", with: "\(id)"))?api_key=\(apiKey)"
-    print(url)
     return get(url: URL(string: url)!)
       .map { $0.0 }
       .decode(type: TrailerResponse<VideoId>.self, decoder: decoder)

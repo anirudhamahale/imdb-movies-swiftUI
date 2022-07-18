@@ -11,6 +11,7 @@ import Foundation
 class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
+  private let localDataManager = MovieDataManager()
   
   var movies: [MovieModel] = [] {
     didSet {
@@ -22,7 +23,7 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
   @Published var reachedLastPage: Bool = false
   @Published var state: ListState<MovieModel> = .loading
   
-  private var currentPage = 1
+  var currentPage = 1
   
   func fetchMovies() {
     guard !reachedLastPage else { return }
@@ -33,11 +34,7 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
         self?.isLoading = false
         self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
-        if newMovies.count > 0 {
-          self?.currentPage += 1
-        }
-        self?.movies.append(contentsOf: newMovies)
-        self?.isLoading = false
+        self?.processReceivedValue(newMovies)
       }.store(in: &subscriptions)
   }
   
@@ -51,14 +48,41 @@ class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
         self?.processCompletion(completion)
       } receiveValue: { [weak self] newMovies in
         self?.isRefreshing = false
-        self?.movies = newMovies
+        self?.processReceivedValue(newMovies)
       }.store(in: &subscriptions)
+  }
+  
+  private func processReceivedValue(_ newMovies: [MovieModel]) {
+    if newMovies.count > 0 && currentPage == 1 {
+      localDataManager.clearTopRated()
+    }
+    localDataManager.saveTopRatedMovies(newMovies)
+    if currentPage == 1 {
+      movies = newMovies
+    } else {
+      movies.append(contentsOf: newMovies)
+    }
+    if newMovies.count >= 20 {
+      currentPage += 1
+    } else {
+      reachedLastPage = true
+    }
+    if movies.count == 0 {
+      state = .noData
+    }
+    isLoading = false
   }
   
   private func processCompletion(_ completion: Subscribers.Completion<Error>) {
     switch completion {
     case .failure(let error):
-      if movies.count == 0 {
+      if error._code == NSURLErrorNotConnectedToInternet && movies.count == 0 {
+        movies = localDataManager.getAllTopRatedMovies()
+          .compactMap { MovieModel.fromLocalDatabase($0) }
+        if movies.count == 0 {
+          state = .noData
+        }
+      } else if movies.count == 0 {
         state = .error(error)
       }
     default: break
