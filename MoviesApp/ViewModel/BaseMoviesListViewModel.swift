@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+// Do not create an instance of this class.
 class BaseMoviesListViewModel: BaseViewModel, ViewModelType {
   
   enum State {
@@ -16,7 +17,7 @@ class BaseMoviesListViewModel: BaseViewModel, ViewModelType {
     case error(Error)
     case noData
   }
-
+  
   enum Input {
     // True will indicate refresh
     case fetchMovies(Bool)

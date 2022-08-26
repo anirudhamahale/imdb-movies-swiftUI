@@ -18,10 +18,15 @@ struct MovieDetailView: View {
       switch viewModel.state {
       case .loading:
         LoadingView(title: "Loading details...")
+          .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) {
+              fetchDetails()
+            }
+          }
         
       case .error(let error):
         ErrorView(message: error.localizedDescription, buttonTitle: "Retry") {
-          viewModel.getDetails()
+          fetchDetails()
         }
         
       case .details(let movie):
@@ -48,16 +53,14 @@ struct MovieDetailView: View {
               .multilineTextAlignment(.center)
             
             NavigationLink(destination: MovieTrailerView(viewModel: MovieTrailerViewModel(id: movie.id))) {
-              ZStack {
-                Color.red
+              GeometryReader { geo in
                 Text("Watch Trailer")
                   .font(.system(size: 20))
-                  .foregroundColor(Color.white)
                   .padding()
-                  .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                      .stroke(Color.black, lineWidth: 0)
-                )
+                  .foregroundColor(Color.white)
+                  .frame(width: geo.size.width)
+                  .background(Color.red)
+                  .cornerRadius(8)
               }
             }
           }.padding()
@@ -65,11 +68,11 @@ struct MovieDetailView: View {
         }
         .navigationBarTitle("Movie Details", displayMode: .inline)
       }
-    }.onAppear {
-      if viewModel.movieDetail == nil {
-        viewModel.getDetails()
-      }
     }
+  }
+  
+  private func fetchDetails() {
+    viewModel.trigger(.fetchDetails)
   }
 }
 

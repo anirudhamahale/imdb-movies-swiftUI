@@ -7,13 +7,20 @@
 
 import Foundation
 
-class MovieDetailViewModel: BaseViewModel {
+class MovieDetailViewModel: BaseViewModel, ViewModelType {
 
   enum State {
     case details(MovieModelDetails)
     case loading
     case error(Error)
   }
+  
+  enum Input {
+    case fetchDetails
+  }
+  
+  @Published
+  private(set) var state: State = .loading
   
   init(id: Int) {
     self.id = id
@@ -23,10 +30,19 @@ class MovieDetailViewModel: BaseViewModel {
   private let networkRepo = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   
   let id: Int
-  @Published var state = State.loading
-  var movieDetail: MovieModelDetails?
+  private var movieDetail: MovieModelDetails?
+  private var isLoading = false
   
-  func getDetails() {
+  func trigger(_ input: Input) {
+    switch input {
+    case .fetchDetails:
+      getDetails()
+    }
+  }
+  
+  private func getDetails() {
+    guard !isLoading else { return }
+    isLoading = true
     state = .loading
     networkRepo.getDetails(id: id)
       .receive(on: DispatchQueue.main)
@@ -40,9 +56,11 @@ class MovieDetailViewModel: BaseViewModel {
           }
         case .finished: break
         }
+        self?.isLoading = false
       } receiveValue: { [weak self] movie in
         self?.movieDetail = movie
         self?.state = .details(movie)
+        self?.isLoading = false
       }.store(in: &subscriptions)
   }
   
