@@ -1,5 +1,5 @@
 //
-//  PopularMoviesViewModelV2.swift
+//  BaseMoviesListViewModel.swift
 //  MoviesApp
 //
 //  Created by Anirudha Mahale on 26/08/22.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class PopularMoviesViewModelV2: BaseViewModel, ViewModelType {
+class BaseMoviesListViewModel: BaseViewModel, ViewModelType {
   
   enum State {
     case loading
@@ -31,7 +31,6 @@ final class PopularMoviesViewModelV2: BaseViewModel, ViewModelType {
   @Published
   private(set) var state: State = .loading
   
-  private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   private var currentPage = 1
   private var isLoading: Bool = false
   private var movies: [MovieModel] = []
@@ -56,7 +55,7 @@ final class PopularMoviesViewModelV2: BaseViewModel, ViewModelType {
     if movies.count == 0 {
       state = .loading
     }
-    networkManager.getPopularMovies(page: currentPage)
+    getRemoteMovies(page: currentPage)
       .receive(on: DispatchQueue.main)
       .sink { [weak self] completion in
         self?.isLoading = false
@@ -101,4 +100,21 @@ final class PopularMoviesViewModelV2: BaseViewModel, ViewModelType {
     default: break
     }
   }
+  
+  func getAllMovies() -> [MovieCD] {
+    fatalError()
+  }
+  
+  func saveMovies(_ movies: [MovieModel]) {
+    fatalError()
+  }
+  
+  func clearMovies() {
+    fatalError()
+  }
+  
+  func getRemoteMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
+    fatalError()
+  }
+  
 }

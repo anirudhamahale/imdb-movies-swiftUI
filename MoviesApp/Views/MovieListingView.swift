@@ -2,16 +2,17 @@
 //  MovieListingView.swift
 //  MoviesApp
 //
-//  Created by Anirudha Mahale on 16/07/22.
+//  Created by Anirudha Mahale on 26/08/22.
 //
 
 import SwiftUI
 import SwiftUIRefresh
 
-struct MovieListingView<T>: View where T: MoviesViewModelInterface {
+struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
   
   @ObservedObject var viewModel: T
   @State var title: String
+  @State var reachedLastPage: Bool = false
   
   var body: some View {
     NavigationView {
@@ -19,47 +20,64 @@ struct MovieListingView<T>: View where T: MoviesViewModelInterface {
         switch viewModel.state {
         case .loading:
           LoadingView(title: "Loading Movies...")
+            .onAppear {
+              fetchMovies()
+            }
         case .error(let error):
           ErrorView(message: error.localizedDescription, buttonTitle: "Retry") {
-            viewModel.fetchMovies()
+            fetchMovies()
           }
         case .noData:
           Text("No data")
             .multilineTextAlignment(.center)
             .font(.system(size: 20))
-        case .data(let movies):
+        case .movies(let data):
           List {
-            ForEach(movies) { movie in
+            ForEach(data.movies) { movie in
               NavigationLink(destination: LazyView(MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id)))) {
                 MovieViewRow(movie: movie)
                   .onAppear {
-                    if movie == movies.last && !viewModel.isLoading {
-                      viewModel.fetchMovies()
+                    if movie == data.movies.last {
+                      reachedLastPage = !data.moreRemaining
+                    }
+                    if movie == data.movies.last && data.moreRemaining {
+                      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        fetchMovies()
+                      }
                     }
                   }
               }
-              if movie == movies.last && viewModel.isLoading {
+              if movie == data.movies.last && data.moreRemaining {
                 HStack {
                   Spacer()
-                  ActivityIndicator(isAnimating: $viewModel.isLoading)
+                  ActivityIndicator(isAnimating: .constant(data.moreRemaining))
                   Spacer()
                 }
               }
             }
-          }.pullToRefresh(isShowing: $viewModel.isRefreshing) {
-            viewModel.refreshMovies()
+          }.pullToRefresh(isShowing: .constant(data.isRefreshing)) {
+            print("Refresheeeee")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+              refreshMovies()
+            }
           }
         }
       }
       .navigationViewStyle(.stack)
       .navigationBarTitle("\(title)", displayMode: .inline)
-      .alert(isPresented: $viewModel.reachedLastPage) {
+      .alert(isPresented: $reachedLastPage) {
         Alert(title: Text("You have reached to the end of the list."))
-      }
-    }.onAppear {
-      if viewModel.currentPage == 1 && !viewModel.isLoading && !viewModel.isRefreshing {
-        viewModel.fetchMovies()
       }
     }
   }
+  
+  private func fetchMovies() {
+    viewModel.trigger(.fetchMovies(false))
+  }
+  
+  private func refreshMovies() {
+    viewModel.trigger(.fetchMovies(true))
+  }
+  
 }
+

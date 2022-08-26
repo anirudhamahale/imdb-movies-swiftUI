@@ -8,85 +8,25 @@
 import Combine
 import Foundation
 
-class TopRatedMoviesViewModel: BaseViewModel, MoviesViewModelInterface {
+class TopRatedMoviesViewModel: BaseMoviesListViewModel {
   
   private let networkManager = MovieNetworkManager(apiKey: Constants.imdbAPIKey)
   private let localDataManager = MovieDataManager()
   
-  var movies: [MovieModel] = [] {
-    didSet {
-      state = .data(movies)
-    }
-  }
-  @Published var isRefreshing = false
-  @Published var isLoading: Bool = false
-  @Published var reachedLastPage: Bool = false
-  @Published var state: ListState<MovieModel> = .loading
-  
-  var currentPage = 1
-  
-  func fetchMovies() {
-    guard !reachedLastPage else { return }
-    isLoading = true
-    networkManager.getTopRatedMovies(page: currentPage)
-      .receive(on: DispatchQueue.main)
-      .sink { [weak self] completion in
-        self?.isLoading = false
-        self?.processCompletion(completion)
-      } receiveValue: { [weak self] newMovies in
-        self?.processReceivedValue(newMovies)
-      }.store(in: &subscriptions)
+  override func getAllMovies() -> [MovieCD] {
+    return localDataManager.getAllTopRatedMovies()
   }
   
-  func refreshMovies() {
-    currentPage = 1
-    isRefreshing = true
-    networkManager.getTopRatedMovies(page: currentPage)
-      .receive(on: DispatchQueue.main)
-      .sink { [weak self] completion in
-        self?.isRefreshing = false
-        self?.processCompletion(completion)
-      } receiveValue: { [weak self] newMovies in
-        self?.isRefreshing = false
-        self?.processReceivedValue(newMovies)
-      }.store(in: &subscriptions)
+  override func saveMovies(_ movies: [MovieModel]) {
+    localDataManager.saveTopRatedMovies(movies)
   }
   
-  private func processReceivedValue(_ newMovies: [MovieModel]) {
-    if newMovies.count > 0 && currentPage == 1 {
-      localDataManager.clearTopRated()
-    }
-    localDataManager.saveTopRatedMovies(newMovies)
-    if currentPage == 1 {
-      movies = newMovies
-    } else {
-      movies.append(contentsOf: newMovies)
-    }
-    if newMovies.count >= 20 {
-      currentPage += 1
-    } else {
-      reachedLastPage = true
-    }
-    if movies.count == 0 {
-      state = .noData
-    }
-    isLoading = false
+  override func clearMovies() {
+    localDataManager.clearTopRated()
   }
   
-  private func processCompletion(_ completion: Subscribers.Completion<Error>) {
-    switch completion {
-    case .failure(let error):
-      if error._code == NSURLErrorNotConnectedToInternet && movies.count == 0 {
-        movies = localDataManager.getAllTopRatedMovies()
-          .compactMap { MovieModel.fromLocalDatabase($0) }
-        if movies.count == 0 {
-          state = .noData
-        }
-      } else if movies.count == 0 {
-        state = .error(error)
-      }
-    default: break
-    }
+  override func getRemoteMovies(page: Int) -> AnyPublisher<[MovieModel], Error> {
+    return networkManager.getTopRatedMovies(page: page)
   }
 }
 
