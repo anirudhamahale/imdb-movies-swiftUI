@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 import SwiftUIRefresh
 
 struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
@@ -37,9 +38,6 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
               NavigationLink(destination: LazyView(MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id)))) {
                 MovieViewRow(movie: movie)
                   .onAppear {
-                    if movie == data.movies.last {
-                      reachedLastPage = !data.moreRemaining
-                    }
                     if movie == data.movies.last && data.moreRemaining {
                       DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         fetchMovies()
@@ -63,6 +61,14 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
           }
         }
       }
+      .onReceive(Just(viewModel.state), perform: { state in
+        switch state {
+        case .movies(let data):
+          reachedLastPage = !data.moreRemaining
+        default:
+          break
+        }
+      })
       .navigationViewStyle(.stack)
       .navigationBarTitle("\(title)", displayMode: .inline)
       .alert(isPresented: $reachedLastPage) {
@@ -78,6 +84,5 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
   private func refreshMovies() {
     viewModel.trigger(.fetchMovies(true))
   }
-  
 }
 
