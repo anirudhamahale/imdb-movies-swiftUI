@@ -12,6 +12,7 @@ import Combine
 struct MovieDetailView: View {
   
   @ObservedObject var viewModel: MovieDetailViewModel
+  @EnvironmentObject var navigationModel: NavigationModel
   
   var body: some View {
     ZStack {
@@ -52,16 +53,20 @@ struct MovieDetailView: View {
               .font(.system(size: 14))
               .multilineTextAlignment(.center)
             
-            NavigationLink(destination: MovieTrailerView(viewModel: MovieTrailerViewModel(id: movie.id))) {
-              GeometryReader { geo in
-                Text("Watch Trailer")
-                  .font(.system(size: 20))
-                  .padding()
-                  .foregroundColor(Color.white)
-                  .frame(width: geo.size.width)
-                  .background(Color.red)
-                  .cornerRadius(8)
-              }
+            GeometryReader { geo in
+              Text("Watch Trailer")
+                .font(.system(size: 20))
+                .padding()
+                .foregroundColor(Color.white)
+                .frame(width: geo.size.width)
+                .background(Color.red)
+                .cornerRadius(8)
+                .onTapGesture {
+                  navigationModel.popularPath.append(movie.id)
+                }
+            }
+            .nbNavigationDestination(for: Int.self) { id in
+              MovieTrailerView(viewModel: MovieTrailerViewModel(id: id))
             }
           }.padding()
           Spacer()

@@ -14,9 +14,10 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
   @ObservedObject var viewModel: T
   @State var title: String
   @State var reachedLastPage: Bool = false
+  @EnvironmentObject var navigationModel: NavigationModel
   
   var body: some View {
-    NavigationView {
+    NBNavigationStack(path: $navigationModel.popularPath) {
       ZStack {
         switch viewModel.state {
         case .loading:
@@ -35,7 +36,7 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
         case .movies(let data):
           List {
             ForEach(data.movies) { movie in
-              NavigationLink(destination: LazyView(MovieDetailView(viewModel: MovieDetailViewModel(id: movie.id)))) {
+              NBNavigationLink(value: movie.id) {
                 MovieViewRow(movie: movie)
                   .onAppear {
                     if movie == data.movies.last && data.moreRemaining {
@@ -45,6 +46,10 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
                     }
                   }
               }
+              .nbNavigationDestination(for: Int.self, destination: { id in
+                MovieDetailView(viewModel: MovieDetailViewModel(id: id))
+              })
+              
               if movie == data.movies.last && data.moreRemaining {
                 HStack {
                   Spacer()

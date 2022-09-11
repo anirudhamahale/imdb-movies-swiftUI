@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct MovieModel: Codable, Identifiable, Equatable {
+struct MovieModel: Codable, Identifiable, Equatable, Hashable {
   let id: Int
   let originalTitle, description: String
   var posterPath, releaseDate: String

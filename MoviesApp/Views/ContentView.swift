@@ -13,6 +13,7 @@ struct ContentView: View {
   @State var selectedIndex: Int = 0
   private let popularMoviesViewModel = PopularMoviesViewModel()
   private let topRatedViewModel = TopRatedMoviesViewModel()
+  @StateObject var navigationModel = NavigationModel()
   
   var body: some View {
     TabView(selection: $selectedIndex) {
@@ -20,10 +21,12 @@ struct ContentView: View {
         .tabItem {
           Image(selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
         }.tag(0)
+        .environmentObject(navigationModel)
       MovieListingView(viewModel: topRatedViewModel, title: "Top Rated Movies")
         .tabItem {
           Image(selectedIndex == 1 ? "ic_star_filled" : "ic_star")
         }.tag(1)
+        .environmentObject(navigationModel)
     }
   }
 }
