@@ -10,23 +10,24 @@ import Combine
 
 struct ContentView: View {
   
-  @State var selectedIndex: Int = 0
   private let popularMoviesViewModel = PopularMoviesViewModel()
   private let topRatedViewModel = TopRatedMoviesViewModel()
   @StateObject var navigationModel = NavigationModel()
   
   var body: some View {
-    TabView(selection: $selectedIndex) {
-      MovieListingView(viewModel: popularMoviesViewModel, title: "Popular Movies")
-        .tabItem {
-          Image(selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
-        }.tag(0)
-        .environmentObject(navigationModel)
-      MovieListingView(viewModel: topRatedViewModel, title: "Top Rated Movies")
-        .tabItem {
-          Image(selectedIndex == 1 ? "ic_star_filled" : "ic_star")
-        }.tag(1)
-        .environmentObject(navigationModel)
-    }
+    TabView(selection: $navigationModel.selectedIndex) {
+      NBNavigationStack(path: $navigationModel.popularPath) {
+        MovieListingView(viewModel: popularMoviesViewModel, title: "Popular Movies")
+      }.tabItem {
+        Image(navigationModel.selectedIndex == 0 ? "ic_heart_filled" : "ic_heart")
+      }.tag(0)
+      
+      NBNavigationStack(path: $navigationModel.topRatedPath) {
+        MovieListingView(viewModel: topRatedViewModel, title: "Top Rated Movies")
+      }.tabItem {
+        Image(navigationModel.selectedIndex == 1 ? "ic_star_filled" : "ic_star")
+      }.tag(1)
+      
+    }.environmentObject(navigationModel)
   }
 }

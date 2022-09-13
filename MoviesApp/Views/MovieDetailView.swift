@@ -53,23 +53,24 @@ struct MovieDetailView: View {
               .font(.system(size: 14))
               .multilineTextAlignment(.center)
             
-            GeometryReader { geo in
-              Text("Watch Trailer")
-                .font(.system(size: 20))
-                .padding()
-                .foregroundColor(Color.white)
-                .frame(width: geo.size.width)
-                .background(Color.red)
-                .cornerRadius(8)
-                .onTapGesture {
-                  navigationModel.popularPath.append(movie.id)
-                }
-            }
-            .nbNavigationDestination(for: Int.self) { id in
-              MovieTrailerView(viewModel: MovieTrailerViewModel(id: id))
+            GeometryReader { proxy in
+              Button {
+                navigationModel.appendView(movie.id)
+              } label: {
+                Text("Watch Trailer")
+                  .font(.system(size: 20))
+                  .padding()
+                  .frame(width: proxy.size.width)
+                  .foregroundColor(Color.white)
+                  .background(Color.red)
+                  .cornerRadius(8)
+              }
             }
           }.padding()
           Spacer()
+        }
+        .nbNavigationDestination(for: Int.self) { id in
+          MovieTrailerView(viewModel: MovieTrailerViewModel(id: id))
         }
         .navigationBarTitle("Movie Details", displayMode: .inline)
       }

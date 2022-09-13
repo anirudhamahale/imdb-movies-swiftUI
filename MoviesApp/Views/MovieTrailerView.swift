@@ -11,7 +11,7 @@ import Combine
 struct MovieTrailerView: View {
   
   @ObservedObject var viewModel: MovieTrailerViewModel
-  @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+  @EnvironmentObject var navigationModel: NavigationModel
   
   var body: some View {
     ZStack {
@@ -26,7 +26,8 @@ struct MovieTrailerView: View {
         
       case .details(let id):
         YoutubeVideoView(videoID: id) {
-          mode.wrappedValue.dismiss()
+          navigationModel.goBack()
+          // mode.wrappedValue.dismiss()
         }
       }
     }

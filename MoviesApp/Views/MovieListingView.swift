@@ -17,7 +17,6 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
   @EnvironmentObject var navigationModel: NavigationModel
   
   var body: some View {
-    NBNavigationStack(path: $navigationModel.popularPath) {
       ZStack {
         switch viewModel.state {
         case .loading:
@@ -79,7 +78,6 @@ struct MovieListingView<T>: View where T: BaseMoviesListViewModel {
       .alert(isPresented: $reachedLastPage) {
         Alert(title: Text("You have reached to the end of the list."))
       }
-    }
   }
   
   private func fetchMovies() {
